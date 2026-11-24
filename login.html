@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log in · Savings Group</title><link rel="stylesheet" href="css/style.css"></head>
+<body class="auth">
+<section class="brand">
+  <h1>Asset Nova Savings Group</h1>
+  <p>Every contribution and loan, on the record.</p>
+</section>
+<main>
+  <div id="forms">
+    <h2>Log in</h2>
+    <form id="login">
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Password<input name="password" type="password" data-pw autocomplete="current-password" required></label>
+      <label class="check"><input type="checkbox" class="reveal"> Show password</label>
+      <button>Log in</button>
+    </form>
+    <p class="switch">New to the group? <a href="signup.html">Sign up</a></p>
+  </div>
+
+
+  <p id="msg" role="alert"></p>
+</main>
+<script src="js/models.js"></script><script src="js/auth-ui.js"></script><script src="js/login.js"></script>
+</body></html>

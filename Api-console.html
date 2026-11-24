@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGMS API console</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; background: #fff; color: #111; }
+    select, input, textarea, button { font: inherit; padding: .45rem; box-sizing: border-box; }
+    .row { display: flex; gap: .5rem; margin-bottom: .6rem; }
+    #path { flex: 1; }
+    textarea { width: 100%; font-family: ui-monospace, Consolas, monospace; }
+    pre { background: #f2f2f2; color: #111; padding: 1rem; overflow: auto; white-space: pre-wrap; }
+    small { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>SGMS API console</h1>
+  <p><small>Pick a preset, edit the body if you like, press Send. The login session is kept between requests,
+  so log in as someone first, then try the other presets as that person.</small></p>
+
+  <div class="row"><select id="preset" onchange="loadPreset()" style="width:100%"></select></div>
+  <div class="row">
+    <select id="method"><option>GET</option><option>POST</option></select>
+    <input id="path" placeholder="me.php">
+  </div>
+  <textarea id="body" rows="8" placeholder='JSON body (POST only)'></textarea>
+  <div class="row" style="margin-top:.6rem"><button onclick="send()">Send</button></div>
+  <pre id="out">Nothing sent yet.</pre>
+
+  <script src="Api.js"></script>
+  <script>
+    const presets = [
+      { label: 'Users - register',        method: 'POST', path: 'register.php',
+        body: { full_name: 'Chaz Otieno', phone: '0711000001', email: 'chaz@example.com', password: 'Secret123' } },
+      { label: 'Users - log in',          method: 'POST', path: 'login.php',
+        body: { identifier: 'chaz@example.com', password: 'Secret123' } },
+      { label: 'Users - who am I?',       method: 'GET',  path: 'me.php' },
+      { label: 'Users - log out',         method: 'POST', path: 'logout.php', body: {} },
+      { label: 'Groups - create (Administrator)', method: 'POST', path: 'create.php',
+        body: { group_name: 'Umoja Chama', contribution_amount: 1000, contribution_frequency: 'Monthly' } },
+      { label: 'Groups - list (Administrator)',   method: 'GET',  path: 'List_Group.php' },
+      { label: 'Groups - rename / deactivate (Administrator)', method: 'POST', path: 'update.php',
+        body: { group_id: 1, status: 'Inactive' } },
+      { label: 'Groups - assign Chairperson/Treasurer (Administrator)', method: 'POST', path: 'assign_official.php',
+        body: { group_id: 1, identifier: 'chaz@example.com', group_role: 'Chairperson' } },
+      { label: 'Members - add (Chairperson/Treasurer)', method: 'POST', path: 'add.php',
+        body: { identifier: '0711000003', next_of_kin_name: 'Jane Achieng', next_of_kin_phone: '0722000009' } },
+      { label: 'Members - list (Chair/Treasurer; Admin adds ?group_id=1)', method: 'GET', path: 'list-member.php' },
+      { label: 'Members - activate / deactivate (Chair/Treasurer)', method: 'POST', path: 'set-status.php',
+        body: { membership_id: 3, status: 'Inactive' } },
+    ];
+
+    const el = (id) => document.getElementById(id);
+    const out = el('out');
+
+    presets.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = p.label;
+      el('preset').appendChild(o);
+    });
+
+    function loadPreset() {
+      const p = presets[el('preset').value];
+      el('method').value = p.method;
+      el('path').value = p.path;
+      el('body').value = p.body ? JSON.stringify(p.body, null, 2) : '';
+    }
+
+    async function send() {
+      const method = el('method').value;
+      const path = el('path').value.trim();
+      let body = null;
+      if (method === 'POST') {
+        try { body = JSON.parse(el('body').value || '{}'); }
+        catch (e) { out.textContent = 'The body is not valid JSON:\n' + e.message; return; }
+      }
+      const result = await apiRequest(path, method, body);
+      out.textContent = 'HTTP ' + result.status + '\n' + JSON.stringify(result, null, 2);
+    }
+
+    loadPreset();
+  </script>
+</body>
+</html>

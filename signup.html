@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign up · Savings Group</title><link rel="stylesheet" href="css/style.css"></head>
+<body class="auth">
+<section class="brand">
+  <h1>Asset Nova Savings Group</h1>
+  <p>Every contribution and loan, on the record.</p>
+</section>
+<main>
+  <div id="forms">
+    <h2>Create your account</h2>
+    <form id="signup">
+      <label>Full name<input name="name" autocomplete="name" required></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Phone (optional)<input name="phone" type="tel" autocomplete="tel" placeholder="0712345678"></label>
+      <label>Password<input name="password" type="password" data-pw autocomplete="new-password" minlength="8" required></label>
+      <label>Confirm password<input name="confirm" type="password" data-pw autocomplete="new-password" required></label>
+      <label class="check"><input type="checkbox" class="reveal"> Show passwords</label>
+      <button>Create account</button>
+      <p class="hint"></p>
+    </form>
+    <p class="switch">Already have an account? <a href="login.html">Log in</a></p>
+  </div>
+
+
+  <p id="msg" role="alert"></p>
+</main>
+<script src="js/models.js"></script><script src="js/auth-ui.js"></script><script src="js/signup.js"></script>
+</body></html>

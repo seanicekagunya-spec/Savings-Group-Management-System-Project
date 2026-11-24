@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGMS auth test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 560px; margin: 2rem auto; padding: 0 1rem; }
+    input { display: block; width: 100%; margin: .3rem 0 .8rem; padding: .5rem; box-sizing: border-box; }
+    button { padding: .5rem 1rem; margin-right: .4rem; }
+    pre { background: #f2f2f2; color: #111; padding: 1rem; overflow: auto; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>SGMS auth test page</h1>
+
+  <h2>1. Register</h2>
+  <input id="reg_name" placeholder="Full name">
+  <input id="reg_phone" placeholder="Phone, e.g. 0712345678">
+  <input id="reg_email" placeholder="Email">
+  <input id="reg_password" type="password" placeholder="Password (8+ characters)">
+  <button onclick="doRegister()">Register</button>
+
+  <h2>2. Log in</h2>
+  <input id="login_id" placeholder="Phone or email">
+  <input id="login_password" type="password" placeholder="Password">
+  <button onclick="doLogin()">Log in</button>
+  <button onclick="doMe()">Who am I?</button>
+  <button onclick="doLogout()">Log out</button>
+
+  <h2>Server answer</h2>
+  <pre id="out">Nothing yet.</pre>
+
+  <script src="api.js"></script>
+  <script>
+    const out = document.getElementById('out');
+    const val = (id) => document.getElementById(id).value;
+    // textContent (not innerHTML) keeps server text from being run as HTML.
+    const show = (result) => { out.textContent = JSON.stringify(result, null, 2); };
+
+    async function doRegister() {
+      show(await apiPost('Register.php', {
+        full_name: val('reg_name'), phone: val('reg_phone'),
+        email: val('reg_email'), password: val('reg_password'),
+      }));
+    }
+    async function doLogin() {
+      show(await apiPost('login.php', {
+        identifier: val('login_id'), password: val('login_password'),
+      }));
+    }
+    async function doMe()     { show(await apiGet('me.php')); }
+    async function doLogout() { show(await apiPost('logout.php', {})); }
+  </script>
+</body>
+</html>
